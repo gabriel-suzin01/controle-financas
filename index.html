@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="pt-br" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Carregando ícone -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>" />
+
+    <title>Controle de Gastos</title>
+
+    <!-- Carregando CDN do font awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <!-- Carregando fonte Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+
+    <!-- Carregando CDN do google charts -->
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <!-- Carregando scripts de OAuth2 -->
+    <script src="https://accounts.google.com/gsi/client"></script>
+
+    <!-- Carregando scripts e CDN do toastify-js -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <!-- Carregando estilos principais -->
+    <link rel="stylesheet" type="text/css" href="./style.css" />
+    
+    <!-- Carregando scripts principal -->
+    <script src="./index.js"></script>
+  </head>
+  <body>
+    <div id="container-init" class="form-container" style="display: none">
+      <div class="backdrop-filter"></div>
+      <div id="init">
+        <button type="button" onclick="client.requestAccessToken()">
+          <i class="fa-brands fa-google fa-2x"></i>
+          <span>Entrar com o google</span>
+        </button>
+      </div>
+    </div>
+    <div id="container-form-dados" class="form-container" style="display: none">
+      <div class="backdrop-filter"></div>
+      <form id="form-dados" class="card">
+        <div class="form-dados-title">
+          <h2>Inserir Dados</h2>
+          <button class="form-button" style="font-size: 1rem" type="button" onclick="closeAllForms()" title="Fechar">&#10006</button>
+        </div>
+        <input id="id" name="id" type="hidden" />
+        <div class="input-group">
+          <label for="descricao">Descrição:</label>
+          <input id="descricao" name="descricao" type="text" required/>
+        </div>
+        <div class="input-group">
+          <label for="categoria">Método de Pagamento:</label>
+          <select id="categoria" name="categoria" class="categoria-container">
+            <option value="Aluguel / Prestação">Aluguel / Prestação</option>
+            <option value="Condomínio">Condomínio</option>
+            <option value="IPTU">IPTU</option>
+            <option value="Luz">Luz</option>
+            <option value="Água">Água</option>
+            <option value="Gás">Gás</option>
+            <option value="Internet">Internet</option>
+            <option value="Plano de Celular">Plano de Celular</option>
+            <option value="Supermercado">Supermercado</option>
+            <option value="Restaurantes / Delivery">Restaurantes / Delivery</option>
+            <option value="Lanches / Padaria">Lanches / Padaria</option>
+            <option value="Uber / Táxi">Uber / Táxi</option>
+            <option value="Combustível">Combustível</option>
+            <option value="Transporte Público">Transporte Público</option>
+            <option value="Manutenção do Carro">Manutenção do Carro</option>
+            <option value="IPVA / Seguro">IPVA / Seguro</option>
+            <option value="Farmácia">Farmácia</option>
+            <option value="Consultas / Exames">Consultas / Exames</option>
+            <option value="Academia">Academia</option>
+            <option value="Salão / Barbearia">Salão / Barbearia</option>
+            <option value="Roupas e Acessórios">Roupas e Acessórios</option>
+            <option value="Eletrônicos">Eletrônicos</option>
+            <option value="Assinaturas (Netflix, Spotify, etc.)">Assinaturas (Netflix, Spotify, etc.)</option>
+            <option value="Cinema / Shows / Rolês">Cinema / Shows / Rolês</option>
+            <option value="Viagens">Viagens</option>
+            <option value="Presentes">Presentes</option>
+            <option value="Livros / Cursos">Livros / Cursos</option>
+            <option value="Mensalidades Escolares">Mensalidades Escolares</option>
+            <option value="Investimentos">Investimentos</option>
+            <option value="Reserva de Emergência">Reserva de Emergência</option>
+            <option value="Parcelas / Empréstimos">Parcelas / Empréstimos</option>
+            <option value="Tarifas Bancárias">Tarifas Bancárias</option>
+            <option value="Imprevistos">Imprevistos</option>
+            <option value="Pet (Ração, Veterinário)">Pet (Ração, Veterinário)</option>
+            <option value="Doações">Doações</option>
+          </select>
+        </div>
+        <div style="display: flex; gap: 5px">
+          <div class="input-group" style="flex: 0 1 1">
+            <label for="valor">Valor:</label>
+            <input id="valor" name="valor" type="text" onkeypress="return event.charCode >= 48 && event.charCode <= 57" required />
+          </div>
+          <div class="input-group" style="max-width: 60px">
+            <label for="status">Status:</label>
+            <input id="status" name="status" type="checkbox" style="align-self: flex-start;" />
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 3px">
+          <div class="input-group">
+            <label for="met_pagamento">Método de Pagamento:</label>
+            <select id="met_pagamento" name="met_pagamento" class="met_pagamento-container" onchange="const div = document.getElementById('parcela-inputs'); ['Cartão de Crédito', 'Dinheiro'].includes(this.value) ? div.style.display = 'flex' : div.style.display = 'none'">
+              <option value="Pix">Pix</option>
+              <option value="Dinheiro">Dinheiro</option>
+              <option value="Cartão de Crédito">Cartão de Crédito</option>
+              <option value="Cartão de Débito">Cartão de Débito</option>
+            </select>
+          </div>
+          <div id="parcela-inputs" style="display: none; gap: 5px">
+            <div class="input-group">
+              <label for="qtd_parcelas">Qtd. Parcelas:</label>
+              <input id="qtd_parcelas" name="qtd_parcelas" type="text" onkeypress="return event.charCode >= 48 && event.charCode <= 57" />
+            </div>
+            <div class="input-group">
+              <label for="num_parcela">N.° Parcela:</label>
+              <input id="num_parcela" name="num_parcela" type="text" onkeypress="return event.charCode >= 48 && event.charCode <= 57" />
+            </div>
+          </div>
+        </div>
+        <button class="form-button" type="submit">Salvar</button>
+      </form>
+    </div>
+    <div class="navbar">
+      <div class="btn-container">
+        <a href="#graficos">Gráficos</a>
+        <a href="#tabela">Tabela</a>
+      </div>
+
+      <div class="theme-switch">
+        <i id="theme-icon" class="fa fa-solid fa-fw"></i>
+        <button onclick="toggleTheme()">
+          <div class="switch"></div>
+        </button>
+      </div>
+    </div>
+    <div id="main">
+      <div class="top">
+        <div class="btn-container">
+          <button class="btn" onclick="showDataForm()">Inserir Dados</button>
+          <button class="btn" onclick="recreateSheetStructure()">Limpar dados</button>
+        </div>
+        <h2 id="graficos"></h2>
+        <div class="card-top">
+          <div class="card">
+            <div class="card-title">
+              <h2>💸 Gastos por dia da semana</h2>
+            </div>
+            <div class="card-body">
+              <div id="grafico" style="height: 100%"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">
+              <h2>✨ Overview Gerado por IA</h2>
+            </div>
+            <div class="card-body">
+              <em id="ai-overview">Gerando resposta...</em>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 id="tabela"></h2>
+      <div class="bottom">
+        <div class="card">
+          <div class="card-title">
+            <h2>📶 Controle de Gastos</h2>
+          </div>
+          <div class="card-body">
+            <table id="tabela-dados">
+              <thead></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
